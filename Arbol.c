@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "EstructurasDeDatos/Arbol.h"
+
 struct Arbol
 {
 	struct Arbol *derecho, *izquierdo;
@@ -26,38 +28,39 @@ pArbol Arbol_Formar(pArbol izquierdo, void* dato, pArbol derecho)
 pArbol Arbol_Insertar(pArbol arbol, void* dato, int (*comparar)(void*, void*))
 {
 	if (arbol == NULL)
+    {
+        // si se inserta en un arbol vacío, entonces formar uno nuevo con el dato dado
 		return Arbol_Formar(NULL, dato, NULL);
+    }
 	else
 	{
 		int comparacion = comparar(arbol->dato, dato);
+
 		if (comparacion == 0)
 		{
 			return arbol;
 		}
-		else
-		{
-			if (comparacion > 0)
-			{
-				arbol->derecho = Arbol_Insertar(arbol->derecho, dato, comparar);
-				return arbol;
-			}
-			else if (comparacion < 0)
-			{
-				arbol->izquierdo = Arbol_Insertar(arbol->izquierdo, dato, comparar);
-				return arbol;
-			}
-		}
+		else if (comparacion > 0)
+        {
+            arbol->derecho = Arbol_Insertar(arbol->derecho, dato, comparar);
+            return arbol;
+        }
+        else if (comparacion < 0)
+        {
+            arbol->izquierdo = Arbol_Insertar(arbol->izquierdo, dato, comparar);
+            return arbol;
+        }
 	}
 }
 
-int* hacer_int(int valor) 
+static int* hacer_int(int valor) 
 {
 	int* ptr = malloc(sizeof(*ptr));
 	*ptr = valor;
 	return ptr;
 }
 
-int comparar_ints(void* a, void* b)
+static int comparar_ints(void* a, void* b)
 {
 	int a_int = *(int*)a;
 	int b_int = *(int*)b;
@@ -69,7 +72,7 @@ int comparar_ints(void* a, void* b)
 		return -1;
 }
 
-int main()
+int Arbol_Prueba()
 {
 	pArbol arbol = Arbol_Vacio();
 	arbol = Arbol_Insertar(arbol, hacer_int(10), comparar_ints);
